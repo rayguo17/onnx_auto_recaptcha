@@ -11,4 +11,8 @@ service worker/background.js
 3. 得到结果之后，返回给content_script.js
 
 
-service worker 没法load 其他file。真的是。。。
+service worker 没法load,只能使用webpack，但是这样太麻烦了，作为一个实验性质的项目，先在content_script里面把所有逻辑完成了。
+
+浏览器端运行时库采用onnx runtime web
+训练好的模型使用的是 ddddocr的model common.onnx
+图像处理使用了pica

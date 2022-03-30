@@ -1,6 +1,6 @@
 {
     "name": "onnx_anti_captcha",
-    "description": "this extension is initially designed for bypass captcha test by utilizing onnx.js and preprocess data from repository ddddocr@https://github.com/sml2h3/ddddocr",
+    "description": "this extension is initially designed for bypass captcha test by utilizing onnx.js and preprocess model from repository ddddocr@https://github.com/sml2h3/ddddocr",
     "author": "rayguo17",
     "version": "1.0",
     "manifest_version" : 3,

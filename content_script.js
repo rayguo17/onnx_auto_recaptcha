@@ -34,23 +34,6 @@ function getBase64(url) {
       resolve(dataURL);
     }
   })
-	if(url.indexOf('http')==-1){
-		return callback ? callback(url) : null;
-	}
-  var Img = new Image(),
-  dataURL = '';
-  Img.src = url;
-  Img.setAttribute('crossOrigin', 'Anonymous');
-  Img.onload = function() {
-    var canvas = document.createElement('canvas'),
-    width = Img.width,
-    height = Img.height;
-    canvas.width = width;
-    canvas.height = height;
-    canvas.getContext('2d').drawImage(Img, 0, 0, width, height);
-    dataURL = canvas.toDataURL('image/jpeg',0.01*gobal_config.speed);
-    return callback ? callback(dataURL) : null;
-  };
 }
 function data_process(imageData,width,height){
   return new Promise(async (resolve,reject)=>{
@@ -64,7 +47,7 @@ function data_process(imageData,width,height){
       toWidth:newWidth,
       toHeight:newHeight
     });
-    console.log(resizedBuffer);
+    //console.log(resizedBuffer);
     let _result = [];
     for(let i=0;i<resizedBuffer.length;i+=4){
       let r = resizedBuffer[i];
@@ -73,7 +56,7 @@ function data_process(imageData,width,height){
       let val = 0.299*r+0.587*g+0.114*b
       _result.push(val.toFixed(0));
     }
-    console.log(_result);
+    //console.log(_result);
     let inputArray = Float32Array.from(_result);
     console.log(inputArray);
     for(let i=0;i<inputArray.length;i++){
@@ -85,7 +68,7 @@ function data_process(imageData,width,height){
       let output = await session.run({
         'input1':inputs
       })
-      console.log(output);
+      //console.log(output);
       let res = [];
       let last_item=0;
       let last_two_item=0;
@@ -141,34 +124,14 @@ function write(value){
 
 setTimeout(async ()=>{
     try {
-        chrome.storage.sync.get("jaccount",({jaccount})=>{jacc = jaccount;console.log(jaccount)});
-        chrome.storage.sync.get("password",({password})=>{pass = password;console.log(pass)})
+        chrome.storage.sync.get("jaccount",({jaccount})=>{jacc = jaccount;});
+        chrome.storage.sync.get("password",({password})=>{pass = password;})
         
         let model_path = chrome.runtime.getURL("extension/common.onnx");
         session = await ort.InferenceSession.create(model_path);
         let img = document.getElementById("captcha-img");
         let img_base64 = await getBase64(img.src);
         img.src = img_base64;
-        // let inputs = document.getElementsByTagName("input");
-        // for(let i=0;i<inputs.length;i++){
-        //     for(let j=0;j<inputs[i].attributes.length;j++){
-        //         if(inputs[i].attributes[j].nodeValue.indexOf("驗證碼")!=-1 || inputs[i].attributes[j].nodeValue.indexOf("验")!=-1 || inputs[i].attributes[j].nodeValue.indexOf("code")!=-1){
-        //             let img_src = inputs[i].parentNode.getElementsByTagName("img")[0].src
-        //             console.log(img_src)
-        //                 gobal_config.img_src_address = img_src;
-        //                 getBase64(img_src,image_base64=>{
-        //                     var imgs = document.getElementsByTagName("img");
-        //                     for (var i=0;i<imgs.length;i++) {
-        //                         if(imgs[i].currentSrc==gobal_config.img_src_address){
-        //                             imgs[i].src = image_base64;
-        //                         }
-        //                     }
-        //                     image_base64 = image_base64.match(/64,(.*?)$/)[1];
-                            
-        //                 });
-        //         }
-        //     }
-        // }
     } catch (error) {
         console.log(error);
     }
