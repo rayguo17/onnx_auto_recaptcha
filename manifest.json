@@ -5,11 +5,17 @@
     "version": "1.0",
     "manifest_version" : 3,
     "content_scripts": [{
-        "js":["content_script.js"],
+        "js":["content_script.js","extension/ort.js","extension/pica.js"],
         "matches":["*://jaccount.sjtu.edu.cn/jaccount/jalogin?sid=*"]
     }],
     "background": {
-        "service_worker":"background.js"
-    }
-
+        "service_worker":"extension/background.js",
+        "type":"module"
+    },
+    "web_accessible_resources":[
+        {
+            "resources":["extension/ort-wasm-simd.wasm","extension/common.onnx"],
+            "matches":["<all_urls>"]
+        }
+    ]
 }
