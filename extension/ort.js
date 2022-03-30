@@ -528,6 +528,7 @@ if (isBigUint64ArrayAvailable) {
  */
 const calculateSize = (dims) => {
     let size = 1;
+    console.log("debug center",dims)
     for (let i = 0; i < dims.length; i++) {
         const dim = dims[i];
         if (typeof dim !== 'number' || !Number.isSafeInteger(dim)) {
@@ -827,7 +828,7 @@ s:function(){return 2147483648},l:Ga,E:function(a,b,e){I.copyWithin(a,b,b+e)},f:
 M[h>>0]=0;e+=f.length+1});return 0},D:function(a,b){var e=Ia();N[a>>2]=e.length;var f=0;e.forEach(function(h){f+=h.length+1});N[b>>2]=f;return 0},e:function(){return 0},j:function(a,b,e,f){a=U.Oa(a);b=U.Ma(a,b,e);N[f>>2]=b;return 0},q:function(){},i:function(a,b,e,f){for(var h=0,k=0;k<e;k++){var l=N[b>>2],p=N[b+4>>2];b+=8;for(var v=0;v<p;v++){var u=I[l+v],q=Aa[a];0===u||10===u?((1===a?fa:D)(ja(q,0)),q.length=0):q.push(u)}h+=p}N[f>>2]=h;return 0},w:function(a){var b=Date.now();N[a>>2]=b/1E3|0;N[a+
 4>>2]=b%1E3*1E3|0;return 0},o:La,c:function(a,b,e,f){return La(a,b,e,f)}};
 (function(){function a(h){c.asm=h.exports;G=c.asm.N;ma();na=c.asm.ja;pa.unshift(c.asm.O);O--;c.monitorRunDependencies&&c.monitorRunDependencies(O);0==O&&(null!==P&&(clearInterval(P),P=null),Q&&(h=Q,Q=null,h()))}function b(h){a(h.instance)}function e(h){return va().then(function(k){return WebAssembly.instantiate(k,f)}).then(function(k){return k}).then(h,function(k){D("failed to asynchronously prepare wasm: "+k);F(k)})}var f={a:Qa};O++;c.monitorRunDependencies&&c.monitorRunDependencies(O);if(c.instantiateWasm)try{return c.instantiateWasm(f,
-a)}catch(h){return D("Module.instantiateWasm callback failed with error: "+h),!1}(function(){return E||"function"!==typeof WebAssembly.instantiateStreaming||sa()||R.startsWith("file://")||"function"!==typeof fetch?e(b):fetch(/*R*/chrome.runtime.getURL("extension/ort-wasm-simd.wasm"),{credentials:"same-origin"}).then(function(h){return WebAssembly.instantiateStreaming(h,f).then(b,function(k){D("wasm streaming compile failed: "+k);D("falling back to ArrayBuffer instantiation");return e(b)})})})().catch(/*g*/()=>{console.log("load fail?");});return{}})();
+a)}catch(h){return D("Module.instantiateWasm callback failed with error: "+h),!1}(function(){return E||"function"!==typeof WebAssembly.instantiateStreaming||sa()||R.startsWith("file://")||"function"!==typeof fetch?e(b):fetch(/*RTODO:*/chrome.runtime.getURL("extension/ort-wasm.wasm"),{credentials:"same-origin"}).then(function(h){return WebAssembly.instantiateStreaming(h,f).then(b,function(k){D("wasm streaming compile failed: "+k);D("falling back to ArrayBuffer instantiation");return e(b)})})})().catch(g);return{}})();
 c.___wasm_call_ctors=function(){return(c.___wasm_call_ctors=c.asm.O).apply(null,arguments)};c._OrtInit=function(){return(c._OrtInit=c.asm.P).apply(null,arguments)};c._OrtCreateSessionOptions=function(){return(c._OrtCreateSessionOptions=c.asm.Q).apply(null,arguments)};c._OrtAddSessionConfigEntry=function(){return(c._OrtAddSessionConfigEntry=c.asm.R).apply(null,arguments)};c._OrtReleaseSessionOptions=function(){return(c._OrtReleaseSessionOptions=c.asm.S).apply(null,arguments)};
 c._OrtCreateSession=function(){return(c._OrtCreateSession=c.asm.T).apply(null,arguments)};c._OrtReleaseSession=function(){return(c._OrtReleaseSession=c.asm.U).apply(null,arguments)};c._OrtGetInputCount=function(){return(c._OrtGetInputCount=c.asm.V).apply(null,arguments)};c._OrtGetOutputCount=function(){return(c._OrtGetOutputCount=c.asm.W).apply(null,arguments)};c._OrtGetInputName=function(){return(c._OrtGetInputName=c.asm.X).apply(null,arguments)};
 c._OrtGetOutputName=function(){return(c._OrtGetOutputName=c.asm.Y).apply(null,arguments)};c._OrtFree=function(){return(c._OrtFree=c.asm.Z).apply(null,arguments)};c._OrtCreateTensor=function(){return(c._OrtCreateTensor=c.asm._).apply(null,arguments)};c._OrtGetTensorData=function(){return(c._OrtGetTensorData=c.asm.$).apply(null,arguments)};c._OrtReleaseTensor=function(){return(c._OrtReleaseTensor=c.asm.aa).apply(null,arguments)};
@@ -28433,7 +28434,7 @@ const getWasmFileName = (useSimd, useThreads) => {
     else {
         console.log('injected');
         let path = chrome.runtime.getURL('extension/ort-wasm-simd.wasm')
-        return 'test';
+        //TODO:
         return useSimd ? 'ort-wasm-simd.wasm' : 'ort-wasm.wasm';
     }
 };
@@ -28448,6 +28449,7 @@ const initializeWebAssembly = async (flags) => {
         throw new Error('previous call to \'initializeWebAssembly()\' failed.');
     }
     initializing = true;
+    
     // wasm flags are already initialized
     const timeout = flags.initTimeout;
     const numThreads = flags.numThreads;
@@ -28458,6 +28460,7 @@ const initializeWebAssembly = async (flags) => {
     const wasmFileName = getWasmFileName(false, useThreads);
     const wasmOverrideFileName = getWasmFileName(useSimd, useThreads);
     const wasmPathOverride = typeof flags.wasmPaths === 'object' ? flags.wasmPaths[wasmOverrideFileName] : undefined;
+    console.log("debug center",wasmOverrideFileName);
     let isTimeout = false;
     const tasks = [];
     // promise for timeout
@@ -28474,6 +28477,7 @@ const initializeWebAssembly = async (flags) => {
         const factory = useThreads ? ortWasmFactoryThreaded : ort_wasm_js_1.default;
         const config = {
             locateFile: (fileName, scriptDirectory) => {
+                console.log("debug_center",fileName)
                 if ( true && useThreads && fileName.endsWith('.worker.js') &&
                     typeof Blob !== 'undefined') {
                     return URL.createObjectURL(new Blob([
@@ -28486,6 +28490,7 @@ const initializeWebAssembly = async (flags) => {
                     const prefix = wasmPrefixOverride !== null && wasmPrefixOverride !== void 0 ? wasmPrefixOverride : scriptDirectory;
                     return wasmPathOverride !== null && wasmPathOverride !== void 0 ? wasmPathOverride : prefix + wasmOverrideFileName;
                 }
+                console.log("debug center",scriptDirectory+fileName)
                 return scriptDirectory + fileName;
             }
         };

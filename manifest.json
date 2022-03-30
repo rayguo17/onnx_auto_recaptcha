@@ -14,8 +14,13 @@
     },
     "web_accessible_resources":[
         {
-            "resources":["extension/ort-wasm-simd.wasm","extension/common.onnx"],
+            "resources":["extension/ort-wasm.wasm","extension/common.onnx"],
             "matches":["<all_urls>"]
         }
-    ]
+    ],
+    "action": {
+        "default_popup": "popup/popup.html"
+        
+    },
+    "permissions": ["storage"]
 }
